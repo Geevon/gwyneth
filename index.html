@@ -1,0 +1,978 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Friendship Compatibility Test</title>
+
+
+<style>
+
+/* =========================
+   GENERAL
+========================= */
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+}
+
+body {
+
+    background: #111;
+
+    color: white;
+
+    min-height: 100vh;
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+
+    overflow: hidden;
+}
+
+.container {
+
+    width: 90%;
+
+    max-width: 650px;
+
+    background: #1d1d1d;
+
+    padding: 35px;
+
+    border-radius: 20px;
+
+    text-align: center;
+
+    box-shadow:
+        0 0 30px rgba(255,255,255,0.08);
+}
+
+h1 {
+
+    font-size: 35px;
+
+    margin-bottom: 15px;
+}
+
+p {
+
+    color: #ccc;
+
+    margin-bottom: 25px;
+
+    line-height: 1.5;
+}
+
+
+/* =========================
+   BUTTONS
+========================= */
+
+button {
+
+    background: white;
+
+    color: #111;
+
+    border: none;
+
+    padding: 14px 25px;
+
+    border-radius: 10px;
+
+    font-size: 16px;
+
+    font-weight: bold;
+
+    cursor: pointer;
+
+    transition: 0.2s;
+
+    margin: 8px;
+}
+
+button:hover {
+
+    transform: scale(1.05);
+
+}
+
+
+/* =========================
+   QUESTIONS
+========================= */
+
+.question {
+
+    font-size: 23px;
+
+    margin-bottom: 20px;
+}
+
+.answers {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 10px;
+}
+
+.answers button {
+
+    width: 100%;
+
+    background: #292929;
+
+    color: white;
+
+    border: 1px solid #444;
+}
+
+.answers button:hover {
+
+    background: #444;
+}
+
+
+/* =========================
+   PROGRESS BAR
+========================= */
+
+.progress-container {
+
+    width: 100%;
+
+    height: 15px;
+
+    background: #333;
+
+    border-radius: 20px;
+
+    overflow: hidden;
+
+    margin: 25px 0;
+}
+
+.progress {
+
+    height: 100%;
+
+    width: 0%;
+
+    background: white;
+
+    transition: width 0.3s;
+}
+
+
+/* =========================
+   TERMINAL
+========================= */
+
+#terminal {
+
+    text-align: left;
+
+    background: black;
+
+    padding: 20px;
+
+    border-radius: 10px;
+
+    min-height: 220px;
+
+    font-family: monospace;
+
+    color: #00ff66;
+
+    line-height: 1.7;
+
+    margin-bottom: 20px;
+
+    overflow: hidden;
+}
+
+
+/* =========================
+   HIDDEN
+========================= */
+
+.hidden {
+
+    display: none !important;
+}
+
+
+/* =========================
+   VIDEO JUMPSCARE
+========================= */
+
+#jumpscare {
+
+    position: fixed;
+
+    inset: 0;
+
+    background: black;
+
+    z-index: 9999;
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+}
+
+#scareVideo {
+
+    width: 85%;
+
+    max-width: 900px;
+
+    max-height: 90vh;
+
+    height: auto;
+
+    object-fit: contain;
+
+    border-radius: 10px;
+
+}
+
+
+/* =========================
+   FINAL RESULT
+========================= */
+
+#final {
+
+    font-size: 18px;
+}
+
+.score {
+
+    font-size: 50px;
+
+    font-weight: bold;
+
+    margin: 20px 0;
+}
+
+.small {
+
+    font-size: 13px;
+
+    color: #777;
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<div class="container">
+
+
+    <!-- =========================
+         START
+    ========================== -->
+
+    <div id="start">
+
+        <h1>
+            🤝 Friendship Test
+        </h1>
+
+        <p>
+
+            Let's find out how compatible
+            you and your friend really are.
+
+            <br><br>
+
+            Answer honestly.
+
+        </p>
+
+        <button onclick="startTest()">
+
+            START TEST
+
+        </button>
+
+        <p class="small">
+
+            Estimated accuracy: 100% probably
+
+        </p>
+
+    </div>
+
+
+
+    <!-- =========================
+         QUESTIONS
+    ========================== -->
+
+    <div id="quiz" class="hidden">
+
+        <div id="questionNumber"></div>
+
+
+        <div class="progress-container">
+
+            <div
+                class="progress"
+                id="progress">
+            </div>
+
+        </div>
+
+
+        <div
+            class="question"
+            id="question">
+        </div>
+
+
+        <div
+            class="answers"
+            id="answers">
+        </div>
+
+    </div>
+
+
+
+    <!-- =========================
+         SCANNING
+    ========================== -->
+
+    <div id="scanning" class="hidden">
+
+        <h2>
+            🔍 Analyzing Friendship...
+        </h2>
+
+
+        <div class="progress-container">
+
+            <div
+                class="progress"
+                id="scanProgress">
+            </div>
+
+        </div>
+
+
+        <div id="terminal"></div>
+
+    </div>
+
+
+
+    <!-- =========================
+         FINAL BUTTON
+    ========================== -->
+
+    <div id="final" class="hidden">
+
+        <h1>
+            🎉 RESULT READY
+        </h1>
+
+
+        <p>
+
+            Your friendship analysis
+            has been completed.
+
+        </p>
+
+
+        <div class="score">
+
+            ???
+
+        </div>
+
+
+        <p>
+
+            Click below to reveal
+            your TRUE friendship score.
+
+        </p>
+
+
+        <button onclick="startJumpscare()">
+
+            I ACCEPT MY FATE
+
+        </button>
+
+    </div>
+
+
+</div>
+
+
+
+<!-- =========================
+     VIDEO + AUDIO JUMPSCARE
+========================= -->
+
+<div id="jumpscare" class="hidden">
+
+
+    <video
+        id="scareVideo"
+        playsinline
+        muted>
+
+        <source
+            src="VID20220718190212.mp4"
+            type="video/mp4">
+
+        Your browser does not support video.
+
+    </video>
+
+
+    <audio id="scareAudio">
+
+        <source
+            src="hd.mp3"
+            type="audio/mpeg">
+
+    </audio>
+
+
+</div>
+
+
+
+<script>
+
+
+/* =========================
+   VARIABLES
+========================= */
+
+let currentQuestion = 0;
+
+let score = 0;
+
+
+
+/* =========================
+   QUESTIONS
+========================= */
+
+const questions = [
+
+    {
+
+        q: "Kinsa mas likely ma-late sa inyong lakaw?",
+
+        answers: [
+
+            "Ako 😭",
+
+            "Akong friend",
+
+            "Pareho mi",
+
+            "Walay moabot 💀"
+
+        ]
+
+    },
+
+
+    {
+
+        q: "Kinsa mas kusog mangutang?",
+
+        answers: [
+
+            "Ako",
+
+            "Akong friend",
+
+            "Both of us 💀",
+
+            "Secret 🤫"
+
+        ]
+
+    },
+
+
+    {
+
+        q: "Kung naay group project, kinsa ang mawala?",
+
+        answers: [
+
+            "Ako",
+
+            "Akong friend",
+
+            "Both",
+
+            "Ang project mismo 😭"
+
+        ]
+
+    },
+
+
+    {
+
+        q: "Kinsa mas dali ma-fall?",
+
+        answers: [
+
+            "Ako 💔",
+
+            "Akong friend",
+
+            "Pareho mi",
+
+            "Wala mi feelings"
+
+        ]
+
+    },
+
+
+    {
+
+        q: "Kung hatagan mog ₱1,000, unsa inyong buhaton?",
+
+        answers: [
+
+            "Kaon 🍔",
+
+            "Shopping 🛍️",
+
+            "I-save 💰",
+
+            "Mawala ra dayon 💀"
+
+        ]
+
+    }
+
+];
+
+
+
+/* =========================
+   START TEST
+========================= */
+
+function startTest() {
+
+    document
+        .getElementById("start")
+        .classList
+        .add("hidden");
+
+
+    document
+        .getElementById("quiz")
+        .classList
+        .remove("hidden");
+
+
+    showQuestion();
+
+}
+
+
+
+/* =========================
+   SHOW QUESTION
+========================= */
+
+function showQuestion() {
+
+    const q =
+        questions[currentQuestion];
+
+
+    document
+        .getElementById("questionNumber")
+        .innerText =
+        `Question ${currentQuestion + 1} of ${questions.length}`;
+
+
+    document
+        .getElementById("question")
+        .innerText =
+        q.q;
+
+
+    const answers =
+        document.getElementById("answers");
+
+
+    answers.innerHTML = "";
+
+
+    q.answers.forEach(
+        (answer, index) => {
+
+            const button =
+                document.createElement("button");
+
+
+            button.innerText =
+                answer;
+
+
+            button.onclick =
+                function() {
+
+                    chooseAnswer(index);
+
+                };
+
+
+            answers.appendChild(button);
+
+        }
+    );
+
+
+    const percentage =
+        (currentQuestion /
+        questions.length) * 100;
+
+
+    document
+        .getElementById("progress")
+        .style
+        .width =
+        percentage + "%";
+
+}
+
+
+
+/* =========================
+   ANSWER
+========================= */
+
+function chooseAnswer(index) {
+
+    score +=
+        Math.floor(
+            Math.random() * 20
+        ) + 10;
+
+
+    currentQuestion++;
+
+
+    if (
+        currentQuestion <
+        questions.length
+    ) {
+
+        showQuestion();
+
+    }
+
+    else {
+
+        document
+            .getElementById("quiz")
+            .classList
+            .add("hidden");
+
+
+        startScanning();
+
+    }
+
+}
+
+
+
+/* =========================
+   FAKE SCANNING
+========================= */
+
+function startScanning() {
+
+    document
+        .getElementById("scanning")
+        .classList
+        .remove("hidden");
+
+
+    const terminal =
+        document.getElementById("terminal");
+
+
+    const scanProgress =
+        document.getElementById("scanProgress");
+
+
+    const messages = [
+
+        "Connecting to friendship database...",
+
+        "Checking embarrassing memories...",
+
+        "Analyzing chat history...",
+
+        "Searching for hidden secrets...",
+
+        "Checking who is more annoying...",
+
+        "Calculating friendship compatibility...",
+
+        "Accessing classified information...",
+
+        "ERROR: Friendship too chaotic...",
+
+        "Attempting recovery...",
+
+        "Almost finished..."
+
+    ];
+
+
+    let i = 0;
+
+    let progress = 0;
+
+
+    const interval =
+        setInterval(() => {
+
+
+        if (i < messages.length) {
+
+
+            terminal.innerHTML +=
+                "> " +
+                messages[i] +
+                "<br>";
+
+
+            terminal.scrollTop =
+                terminal.scrollHeight;
+
+
+            i++;
+
+
+            progress += 10;
+
+
+            scanProgress.style.width =
+                progress + "%";
+
+
+        }
+
+        else {
+
+
+            clearInterval(interval);
+
+
+            setTimeout(() => {
+
+
+                document
+                    .getElementById("scanning")
+                    .classList
+                    .add("hidden");
+
+
+                document
+                    .getElementById("final")
+                    .classList
+                    .remove("hidden");
+
+
+            }, 1000);
+
+        }
+
+
+    }, 600);
+
+}
+
+
+
+/* =========================
+   VIDEO + MP3 JUMPSCARE
+========================= */
+
+function startJumpscare() {
+
+
+    const jumpscare =
+        document.getElementById("jumpscare");
+
+
+    const video =
+        document.getElementById("scareVideo");
+
+
+    const audio =
+        document.getElementById("scareAudio");
+
+
+    /* Show jumpscare */
+
+    jumpscare
+        .classList
+        .remove("hidden");
+
+
+    /* Reset video and audio */
+
+    video.currentTime = 0;
+
+    audio.currentTime = 0;
+
+
+    /* Play video */
+
+    video.play()
+        .catch(error => {
+
+            console.log(
+                "Video could not play:",
+                error
+            );
+
+        });
+
+
+    /* Play MP3 */
+
+    audio.play()
+        .catch(error => {
+
+            console.log(
+                "Audio could not play:",
+                error
+            );
+
+        });
+
+
+    /* When video ends */
+
+    video.onended =
+        function() {
+
+
+            audio.pause();
+
+            audio.currentTime = 0;
+
+
+            jumpscare
+                .classList
+                .add("hidden");
+
+
+            showFinalMessage();
+
+        };
+
+}
+
+
+
+/* =========================
+   FINAL MESSAGE
+========================= */
+
+function showFinalMessage() {
+
+
+    document
+        .querySelector(".container")
+        .innerHTML = `
+
+
+        <h1>
+            💀 CONGRATULATIONS 💀
+        </h1>
+
+
+        <p>
+
+            You have successfully completed
+            the Friendship Compatibility Test.
+
+        </p>
+
+
+        <div class="score">
+
+            -999/100
+
+        </div>
+
+
+        <p>
+
+            Friendship status:
+
+            <strong>
+                ABSOLUTELY COOKED 🔥
+            </strong>
+
+        </p>
+
+
+        <br>
+
+
+        <button
+            onclick="location.reload()">
+
+            🔄 Try Again
+
+        </button>
+
+
+    `;
+
+}
+
+
+</script>
+
+
+</body>
+
+</html>
